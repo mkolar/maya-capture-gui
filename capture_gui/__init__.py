@@ -1,4 +1,5 @@
-from .app import App
+from .vendor.Qt import QtWidgets
+from . import app
 from . import lib
 
 
@@ -14,10 +15,14 @@ def main(show=True):
         capture_gui.app.App: The pyblish gui application instance.
 
     """
-
+    # get main maya window to parent widget to
     parent = lib.get_maya_main_window()
-    window = App(parent=parent)
+    instance = parent.findChild(QtWidgets.QWidget, app.App.object_name)
+    if instance:
+        instance.close()
 
+    # launch app
+    window = app.App(title="Capture GUI", parent=parent)
     if show:
         window.show()
 

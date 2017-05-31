@@ -38,6 +38,7 @@ capture_gui.main()
 
 ### Advanced
 
+#### Callbacks
 Register a pre-view callback to allow a custom conversion or overlays on the 
 resulting footage in your pipeline (e.g. through FFMPEG)
 
@@ -70,3 +71,52 @@ app.viewer_start.connect(callback, QtCore.Qt.DirectConnection)
 # Show the app manually
 app.show()
 ```
+
+#### Register preset paths
+
+Register a preset path that will be used by the capture gui to load default presets from.
+
+```python
+import capture_gui.presets
+import capture_gui
+
+path = "path/to/directory"
+capture_gui.presets.register_path(path)
+
+# After registering capture gui will automatically load
+# the presets found in all registered preset paths
+capture_gui.main()
+```
+
+#### Register tokens and translators
+
+Register a token and translator that will be used to translate any tokens
+in the given filename.
+
+```python
+import capture.tokens
+import capture_gui
+
+# this is an example function which retrieves the name of the current user
+def get_user_name():
+    import getpass
+    return getpass.getuser()
+
+# register the token <User> and pass the function which should be called
+# when this token is present.
+# The label is for the right mouse button menu's readability.
+capture.tokens.register_token("<User>",
+                              lambda options : get_user_name(),
+                              label="Insert current user's name")
+```
+
+### Known issues
+
+##### Viewport Plugin _show_ menu close button sometimes appears off screen when torn off
+
+Tearing off the _show_ menu in the Viewport Plugin results in a menu
+with an off screen title bar when torn off near the top edge of the
+screen. This makes it hard to close the menu. To fix this either close
+the capture GUI (to close the menu) or make a new torn off version of
+the _show_ menu at a lower position on screen (this will close the
+previous torn off menu).
